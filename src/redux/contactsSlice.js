@@ -1,44 +1,51 @@
 import { createSlice } from '@reduxjs/toolkit';
-import persistReducer from 'redux-persist/es/persistReducer';
-import storage from 'redux-persist/lib/storage';
+import {
+  getContactsThunk,
+  addContactsThunk,
+  deleteContactsThunk,
+} from './contactsThunk';
 
-const contactkInitialState = {
-  items: [
-    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-  ],
+const handlePending = state => {
+  state.isLoading = true;
+};
+
+const handleReject = (state, { payload }) => {
+  state.error = payload;
 };
 
 const contactSlice = createSlice({
   name: 'contacts',
-  initialState: contactkInitialState,
-  reducers: {
-    addContact(state, action) {
-      state.items.unshift(action.payload);
-    },
-    deleteContact(state, action) {
-      state.items = state.items.filter(
-        contact => contact.id !== action.payload
-      );
-    },
+  initialState: {
+    items: [
+      {
+        createdAt: '2023-09-11T08:46:55.008Z',
+        name: 'Guy Kuvalis',
+        phone: '921.848.6180',
+        id: '1',
+      },
+    ],
+    isLoading: false,
+    error: null,
+  },
+  extraReducers: builder => {
+    builder
+      .addCase(getContactsThunk.pending, handlePending)
+      .addCase(getContactsThunk.rejected, handleReject)
+      .addCase(getContactsThunk.fulfilled, (state, { payload }) => {
+        state.items = payload;
+      })
+      .addCase(addContactsThunk.pending, handlePending)
+      .addCase(addContactsThunk.rejected, handleReject)
+      .addCase(addContactsThunk.fulfilled, (state, { payload }) => {
+        state.items = [payload, ...state.items];
+      })
+      .addCase(deleteContactsThunk.pending, handlePending)
+      .addCase(deleteContactsThunk.rejected, handleReject)
+      .addCase(deleteContactsThunk.fulfilled, (state, { payload }) => {
+        state.items = state.items.filter(item => item.id !== payload.id);
+      });
   },
 });
 
-const persistConfig = {
-  key: 'root',
-  storage,
-  blacklist: ['filter'],
-};
-
-export const persistedContactReducer = persistReducer(
-  persistConfig,
-  contactSlice.reducer
-);
-
-export const { addContact, deleteContact } = contactSlice.actions;
-
-export const getContacts = state => state.contacts.items;
-
+export const { addContactsAction, deleteContactsAction } = contactSlice.actions;
 export const contactsReducer = contactSlice.reducer;
