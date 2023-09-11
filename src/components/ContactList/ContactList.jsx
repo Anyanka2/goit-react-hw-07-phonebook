@@ -1,14 +1,13 @@
 import React from 'react';
 import { List, Button, Item } from './ContactList.styled';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteContact, getContacts } from 'redux/contactsSlice';
-import { getFilter } from 'redux/filterSlice';
+import { deleteContactsThunk } from 'redux/contactsThunk';
 
 const ContactList = () => {
   
   const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
-  const filtered = useSelector(getFilter);
+  const contacts = useSelector(state => state.contacts.items);
+  const filtered = useSelector(state => state.filter);
 
   const filteredContacts = contacts?.filter(
     contact =>
@@ -25,7 +24,7 @@ const ContactList = () => {
             <Button
               type="button"
               name="delete"
-              onClick={() => dispatch(deleteContact(id))}
+              onClick={() => dispatch(deleteContactsThunk(id))}
             >
               delete
             </Button>
