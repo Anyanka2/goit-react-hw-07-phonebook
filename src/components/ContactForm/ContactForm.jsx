@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Label, Input, Button } from './ContactForm.styled';
 import { useDispatch, useSelector } from 'react-redux';
+import { selectContacts } from 'redux/selectors';
 import { getContactsThunk, addContactsThunk } from 'redux/contactsThunk';
 import Notiflix from 'notiflix';
 
 const ContactFrom = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts.items);
+  const contacts = useSelector(selectContacts);
   const [contactName, setContactName] = useState('');
   const [number, setNumber] = useState('');
 
@@ -33,24 +34,23 @@ const ContactFrom = () => {
     }
   };
   const handleSubmit = event => {
-    const { name, phone } = event.target;
-    const contact = {
-      name: name.value,
-      phone: phone.value,
+    const phoneContact = {
+      name: contactName,
+      phone: number,
     };
     event.preventDefault();
 
     const isDuplicateContact = 
       contacts.some(
-        contact => contact.name.toLowerCase() === contactName.toLowerCase() ||
-          phone === contact.phone
+        contact => contact.name.toLowerCase() === phoneContact.name.toLowerCase() ||
+          contact.phone === phoneContact.phone
       );
     if (isDuplicateContact) {
       return Notiflix.Notify.warning(
-        `Contact "${contactName}" or ${phone} is already in your contacts list!`
+        `Contact "${phoneContact.name}" or ${phoneContact.phone} is already in your contacts list!`
       )
     } 
-      dispatch(addContactsThunk(contact));
+      dispatch(addContactsThunk(phoneContact));
       reset();
     
   };
