@@ -2,12 +2,13 @@ import React from 'react';
 import { List, Button, Item } from './ContactList.styled';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteContactsThunk } from 'redux/contactsThunk';
+import { selectFilter, selectContacts } from 'redux/selectors';
 
 const ContactList = () => {
   
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts.items);
-  const filtered = useSelector(state => state.filter);
+  const contacts = useSelector(selectContacts);
+  const filtered = useSelector(selectFilter);
 
   const filteredContacts = contacts?.filter(
     contact =>
