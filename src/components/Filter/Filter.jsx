@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 function Filter() {
   const dispatch = useDispatch();
   const filter = useSelector(getFilter);
-  const onChange = e => {
-    dispatch(setFilter(e.target.value));
+  const onChange = event => {
+    dispatch(setFilter(event.target.value));
   };
   
   return (

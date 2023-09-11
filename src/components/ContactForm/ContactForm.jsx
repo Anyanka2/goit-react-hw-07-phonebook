@@ -1,42 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Label, Input, Button } from './ContactForm.styled';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact, getContacts } from 'redux/contactsSlice';
-import { nanoid } from '@reduxjs/toolkit'
+import { getContactsThunk, addContactsThunk } from 'redux/contactsThunk';
 import Notiflix from 'notiflix';
 
 const ContactFrom = () => {
-  const contacts = useSelector(getContacts);
   const dispatch = useDispatch();
-
-  const [contactName, setcontactName] = useState('');
+  const contacts = useSelector(state => state.contacts.items);
+  const [contactName, setContactName] = useState('');
   const [number, setNumber] = useState('');
 
-  const handleSubmit = event => {
-    event.preventDefault();
+  useEffect(() => {
+    dispatch(getContactsThunk());
+  }, [dispatch]);
 
-    if (contacts.some(({ name }) => name === contactName.toLowerCase())) {
-      Notiflix.Notify.warning(
-        `Contact "${contactName}" is already in your contacts list`
-      );
-      return;
-    }
-    dispatch(
-      addContact({
-        name: contactName,
-        number,
-        id: nanoid(),
-      })
-    );
-
-    setcontactName('');
+  const reset = () => {
+    setContactName('');
     setNumber('');
   };
+
   const handleChange = event => {
     const { name, value } = event.target;
     switch (name) {
       case 'name':
-        setcontactName(value);
+        setContactName(value);
         break;
       case 'number':
         setNumber(value);
@@ -44,6 +31,28 @@ const ContactFrom = () => {
       default:
         return;
     }
+  };
+  const handleSubmit = event => {
+    const { name, phone } = event.target;
+    const contact = {
+      name: name.value,
+      phone: phone.value,
+    };
+    event.preventDefault();
+
+    const isDuplicateContact = 
+      contacts.some(
+        contact => contact.name.toLowerCase() === contactName.toLowerCase() ||
+          phone === contact.phone
+      );
+    if (isDuplicateContact) {
+      return Notiflix.Notify.warning(
+        `Contact "${contactName}" or ${phone} is already in your contacts list!`
+      )
+    } 
+      dispatch(addContactsThunk(contact));
+      reset();
+    
   };
 
   return (

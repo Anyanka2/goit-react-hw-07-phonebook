@@ -18,10 +18,10 @@ const contactSlice = createSlice({
   initialState: {
     items: [
       {
-        createdAt: '2023-09-11T08:46:55.008Z',
-        name: 'Guy Kuvalis',
-        phone: '921.848.6180',
-        id: '1',
+        createdAt: '2023-09-10T15:05:40.363Z',
+        name: 'Florence Klein',
+        phone: '(781) 826-8977',
+        id: '34',
       },
     ],
     isLoading: false,

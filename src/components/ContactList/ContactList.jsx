@@ -12,14 +12,14 @@ const ContactList = () => {
   const filteredContacts = contacts?.filter(
     contact =>
       contact?.name?.toLowerCase().includes(filtered.toLowerCase()) ||
-      contact?.number?.includes(filtered)
+      contact?.phone?.includes(filtered)
   );
 
   return (
     <List>
-      {filteredContacts.map(({ id, name, number }) => (
+      {filteredContacts.map(({ id, name, phone }) => (
         <Item key={id}>
-          {name + ' : ' + number}
+          {name + ' : ' + phone}
           {
             <Button
               type="button"
