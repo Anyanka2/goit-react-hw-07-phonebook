@@ -3,13 +3,9 @@ import { List, Button, Item } from './ContactList.styled';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteContactsThunk } from 'redux/contactsThunk';
 import { selectFilteredContacts } from 'redux/selectors';
-//import { Loader } from 'components/Loader/Loader';
 
 const ContactList = () => {
   const dispatch = useDispatch();
-  // const isLoading = useSelector(selectIsLoading);
-  // const error = useSelector(selectError);
-
   const filteredContacts = useSelector(selectFilteredContacts);
 
   return (
